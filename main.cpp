@@ -105,7 +105,7 @@ unsigned int caseInsensitiveHash(const char* str)
 
 	//Size of the hash in bits
 	//Note: 21 is not an arbitrary value.  This length produces the least
-	//amount of collisions - for the given input anyway.
+	//amount of collisions for the given input.
 	static const int sOfInt = 21;//(int)(log(tableSize)/log(2));
 
 	int offset = 0;
@@ -128,7 +128,10 @@ unsigned int caseInsensitiveHash(const char* str)
 		}
 	}
 	
-	return hash & tableSize;
+	if(hash & tableSize == tableSize)
+		hash = tableSize-1;
+		
+	return (hash & tableSize);
 }
 
 inline int AddWord(const char * text, int value)
@@ -148,14 +151,14 @@ void readFile(const char *const fname, char * &contents, long &size)
 	//Probably not the right thing to do
 	if(contents != 0) return;
 
-	filebuf *pbuf;
+	filebuf *fbuf;
 	ifstream inReader(fname);
-	pbuf = inReader.rdbuf();
-	size = pbuf->pubseekoff(0, ios::end, ios::in);
-	pbuf->pubseekpos(0, ios::in);
+	fbuf = inReader.rdbuf();
+	size = fbuf->pubseekoff(0, ios::end, ios::in);
+	fbuf->pubseekpos(0, ios::in);
 
 	contents = new char[size];
-	pbuf->sgetn(contents, size);
+	fbuf->sgetn(contents, size);
 	inReader.close();
 }
 
