@@ -1,17 +1,12 @@
+//Author: Shawn 'sintaxerror' Rainey
+//Do what you want with it.
 
 #include <fstream>
 #include <iostream>
-//#include <stdlib.h>
 #include <string.h>
 #include <cmath>
-//#include <string>
 #include "hr_time.h"
 
-/*
-#include <map>
-#include <vector>
-#include <algorithm>
-*/
 using namespace std;
 
 const int numEntries = 50000;
@@ -31,7 +26,7 @@ public:
 	tableEntry(): word(0), value(0), next(0) {
 	}
 
-	//Returns the length of this bucket after insertion,
+	//Returns the length of this bucket chain after insertion,
 	//or 0 if duplicate
 	int insert(const char* word, const int value)
 	{
@@ -109,6 +104,8 @@ unsigned int caseInsensitiveHash(const char* str)
 	static const int sOfLetter = 5;
 
 	//Size of the hash in bits
+	//Note: 21 is not an arbitrary value.  This length produces the least
+	//amount of collisions - for the given input anyway.
 	static const int sOfInt = 21;//(int)(log(tableSize)/log(2));
 
 	int offset = 0;
@@ -117,8 +114,6 @@ unsigned int caseInsensitiveHash(const char* str)
 	unsigned int previousOffset = offset;
 	unsigned const int maxStartOffset = sOfInt - sOfLetter;
 	
-	int charOffset = 0,
-		maxCharOffset = 32 - 26;
 	while(*str != 0)
 	{
 		hash ^= (unsigned(toupper(*str++))
@@ -151,7 +146,7 @@ inline int GetValue(const char * text)
 void readFile(const char *const fname, char * &contents, long &size)
 {
 	//Probably not the right thing to do
-	//if(contents != 0) delete contents;
+	if(contents != 0) return;
 
 	filebuf *pbuf;
 	ifstream inReader(fname);
