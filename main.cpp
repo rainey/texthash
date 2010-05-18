@@ -108,7 +108,7 @@ unsigned int caseInsensitiveHash(const char* str)
 	static const int sOfInt = 21;//(int)(log(tableSize)/log(2));
 
 	int offset = 0;
-	//Assume sizeonf(int) = 4
+	
 	unsigned int hash = 0;//0x55555555;
 	unsigned int previousOffset = offset;
 	unsigned const int maxStartOffset = sOfInt - sOfLetter;
@@ -170,6 +170,7 @@ int main()
 	readFile("50000words.txt", buffer[0], size50);
 	readFile("10000words.txt", buffer[1], size10);
 
+	
 	char *entryList[numEntries],
 		*lookupList[numLookups];
 	int entryVals[numEntries],
@@ -177,22 +178,36 @@ int main()
 
 	const char delim[] = ", \n\r";
 	
-	
 	int i = 0;
 	entryList[0] = strtok(buffer[0], delim);
+	
+	//cout << entryList[0] << endl;	//Tetraheism
+	
 	while(entryList[i] != NULL && i < numEntries)
 	{
 		entryVals[i] = atoi(strtok(NULL, delim));
 		entryList[++i] = strtok(NULL, delim);
 	}
-
+	
+	//cout << (void*)entryList[0] << endl;	//0x7c0020
+	//cout << entryList[1] << endl;	//Chrisoms
+	
+	
 	lookupList[0] = strtok(buffer[1], delim);
+	
+	//cout << (void*)entryList[0] << endl;	//0x7c0020
+	//cout << entryList[1] << endl;	//Chrisoms
+	
 	i = 0;
 	while(lookupList[i] != NULL && i < numLookups)
 	{
 		lookupList[++i] = strtok(NULL, delim);
 	}
-
+	
+	entryList[0] = buffer[0];
+	//cout << (void*)entryList[0] << endl;	//0x8a8b2f  <-- WTF strtok
+	//cout << entryList[1] << endl;	//Chrisoms
+	
 	int numCollisions = 0;
 	
 	//timer code goes here
@@ -201,6 +216,7 @@ int main()
 	{
 		//Collided if AddWord returns > 1
 		numCollisions += (AddWord(entryList[i], entryVals[i]) > 1? 1:0);
+		
 		//entryList[i] = 0;
 		++i;
 	}
@@ -214,19 +230,26 @@ int main()
 		sum += lookupVals[i] = GetValue(lookupList[i]);
 		++i;
 	}
-	//Should be 496637501
+	
 	//DONE TIMING
 	s.stopTimer();
 	i=0;
 	while(lookupList[i] != NULL && i < numLookups)
 	{
+		//if(lookupVals[i] == -1)
+		//{
+		//	cout << entryList[0] << " " << entryVals[0] << endl;
+		//	cout << lookupList[i] <<  caseInsensitiveHash(lookupList[i]) << endl;
+		//	cout << hashTable[caseInsensitiveHash(lookupList[i])].valueOf(lookupList[i]) << endl;
+		//} 
 		//cout << lookupList[i] << " " << lookupVals[i] << endl;
 		lookupList[i] = 0;
 		++i;
-	}*/
+	}
 	
 	cout << "Number of collisions: " << numCollisions << endl;
 	cout << s.getElapsedTime() << endl;
+	//Should be 496637501
 	cout << sum << endl;
 	delete [] buffer[0];
 	delete [] buffer[1];
