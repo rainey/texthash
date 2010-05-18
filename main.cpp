@@ -168,7 +168,7 @@ int main()
 	long size50, size10;
 
 	//CStopWatch s;
-	timeval startTime, endTime;
+	timeval startTime, lookupTime, endTime;
 	readFile("50000words.txt", buffer[0], size50);
 	readFile("10000words.txt", buffer[1], size10);
 
@@ -205,14 +205,14 @@ int main()
 	{
 		lookupList[++i] = strtok(NULL, delim);
 	}
-	cout << i << endl;
+	//cout << i << endl;
 	//entryList[0] = buffer[0];
 	//cout << (void*)entryList[0] << endl;
 	//cout << entryList[1] << endl;	//Chrisoms
 	
 	int numCollisions = 0;
 	
-	
+	gettimeofday(&startTime, NULL);
 	i = 0;
 	while(entryList[i] != NULL && i < numEntries)
 	{
@@ -224,7 +224,7 @@ int main()
 	}
 	
 	//DONE LOADING HERE - Start the timer!
-	gettimeofday(&startTime, NULL);
+	gettimeofday(&lookupTime, NULL);
 	i = 0;
 	int sum = 0;
 	while(lookupList[i] != NULL && i < numLookups)
@@ -251,7 +251,8 @@ int main()
 	
 	cout << "Number of collisions: " << numCollisions << endl;
 	//useconds to seconds
-	cout << (endTime.tv_usec - startTime.tv_usec) / (1000.0 * 1000.0) << endl;
+	cout << "Total time: " <<(endTime.tv_usec - startTime.tv_usec) / (1000.0 * 1000.0) << endl;
+	cout << "Time for lookups: " << (endTime.tv_usec - lookupTime.tv_usec) / (1000.0*1000.0) << endl;
 	//Should be 496637501
 	cout << sum << endl;
 	delete [] buffer[0];
